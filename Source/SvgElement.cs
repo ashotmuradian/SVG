@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
@@ -723,7 +724,14 @@ namespace Svg
         {
             foreach (SvgElement element in this.Children)
             {
-                element.Render(renderer);
+                try
+                {
+                    element.Render(renderer);
+                }
+                catch (OverflowException e)
+                {
+                    Trace.WriteLine(e);
+                }
             }
         }
 
