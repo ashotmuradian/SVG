@@ -149,16 +149,16 @@ namespace Svg
             {
                 if(autoForceUniqueID)
                 {
-                    var match = regex.Match(id);
+                    string postfix = Guid.NewGuid().ToString();
+                    int hashSymbolIndex = id.IndexOf("#", StringComparison.Ordinal);
 
-                    int number;
-                    if (match.Success && int.TryParse(match.Value.Substring(1), out number))
+                    if (hashSymbolIndex > 0 && hashSymbolIndex < id.Length - 1)
                     {
-                        id = regex.Replace(id, "#" + (number + 1));
+                        id = id.Substring(0, id.Length - hashSymbolIndex) + postfix;
                     }
                     else
                     {
-                        id += "#1";
+                        id += "#" + postfix;
                     }
 
                     return EnsureValidId(id, true);
@@ -168,7 +168,6 @@ namespace Svg
 
             return id;
         }
-        private static readonly Regex regex = new Regex(@"#\d+$");
 
         /// <summary>
         /// Initialises a new instance of an <see cref="SvgElementIdManager"/>.
