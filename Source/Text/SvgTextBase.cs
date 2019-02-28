@@ -217,7 +217,17 @@ namespace Svg
                 var path = this.Path(null);
                 foreach (var elem in this.Children.OfType<SvgVisualElement>())
                 {
-                    path.AddPath(elem.Path(null), false);
+                    try
+                    {
+                        path.AddPath(elem.Path(null), false);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        if (!e.Message.StartsWith("Parameter is not valid"))
+                        {
+                            throw;
+                        }
+                    }
                 }
                 return path.GetBounds();
             }
