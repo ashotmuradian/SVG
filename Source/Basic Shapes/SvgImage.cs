@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using Svg.Transforms;
@@ -209,7 +210,30 @@ namespace Svg
 
                     if (bmp != null)
                     {
-                        renderer.DrawImage(bmp, destRect, srcRect, GraphicsUnit.Pixel);
+                        // https://docs.microsoft.com/en-us/dotnet/framework/winforms/advanced/how-to-use-a-color-matrix-to-set-alpha-values-in-images
+                        ImageAttributes imageAttributes = null;
+                        if (Opacity < 1 && Opacity > 0)
+                        {
+                            float[][] matrixItems =
+                            {
+                                new float[] {1, 0, 0, 0, 0},
+                                new float[] {0, 1, 0, 0, 0},
+                                new float[] {0, 0, 1, 0, 0},
+                                new float[] {0, 0, 0, Opacity, 0},
+                                new float[] {0, 0, 0, 0, 1}
+                            };
+                            var colorMatrix = new ColorMatrix(matrixItems);
+
+                            imageAttributes = new ImageAttributes();
+                            imageAttributes.SetColorMatrix
+                            (
+                                colorMatrix,
+                                ColorMatrixFlag.Default,
+                                ColorAdjustType.Bitmap
+                            );
+                        }
+                        
+                        renderer.DrawImage(bmp, destRect, srcRect, GraphicsUnit.Pixel, imageAttributes);
                         bmp.Dispose();
                     }
                     else if (svg != null)

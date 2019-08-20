@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Text;
 
 namespace Svg
@@ -42,9 +43,23 @@ namespace Svg
             this._innerGraphics = graphics;
         }
 
-        public void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit)
+        public void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit, ImageAttributes imageAttributes)
         {
-            _innerGraphics.DrawImage(image, destRect, srcRect, graphicsUnit);
+            // destPoints: https://stackoverflow.com/questions/9402224/how-to-convert-a-rectanglef-to-pointf-for-drawing
+            // destPoints: https://docs.microsoft.com/en-us/dotnet/api/system.drawing.graphics.drawimage?redirectedfrom=MSDN&view=netframework-4.8#System_Drawing_Graphics_DrawImage_System_Drawing_Image_System_Drawing_PointF___System_Drawing_RectangleF_System_Drawing_GraphicsUnit_System_Drawing_Imaging_ImageAttributes_
+            _innerGraphics.DrawImage
+            (
+                image, 
+                new []
+                {
+                    new PointF(destRect.Left, destRect.Top),
+                    new PointF(destRect.Right, destRect.Top),
+                    new PointF(destRect.Left, destRect.Bottom)
+                }, 
+                srcRect, 
+                graphicsUnit, 
+                imageAttributes
+            );
         }
         public void DrawImageUnscaled(Image image, Point location)
         {

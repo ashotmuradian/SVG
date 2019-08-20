@@ -2,13 +2,14 @@
 using System.Drawing.Drawing2D;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 
 namespace Svg
 {
     public interface ISvgRenderer : IDisposable
     {
         float DpiY { get; }
-        void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit);
+        void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit, ImageAttributes imageAttributes);
         void DrawImageUnscaled(Image image, Point location);
         void DrawPath(Pen pen, GraphicsPath path);
         void FillPath(Brush brush, GraphicsPath path);
